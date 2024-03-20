@@ -4,34 +4,55 @@ const { Category, Product } = require('../../models');
 // The `/api/categories` endpoint
 
 router.get('/', (req, res) => {
-  console.log("Request Object: ", req)
   // find all categories
+  Category.findAll()
+    .then(data => {
+      console.log("data: ", data);
+      res.status(200).json({ message: data });
+    })
+    .catch(error => {
+      console.log("Error: ", error);
+      res.status(500).json({ message: error });
+    });
   // be sure to include its associated Products
-
-  res.status(200).json({ message: 'categories' });
 });
 
 router.get('/:id', (req, res) => {
-  console.log("Request Params: ", req.params)
+  console.log("Request Params: ", req.params)  // { id: "2" }
   // find one category by its `id` value
-  // be sure to include its associated Products
-  
+  Category.findOne({ where: { id: req.params.id }})
+    .then(data => {
+      console.log("data: ", data);
+      res.status(200).json({ message: data });
+    })
+    .catch(error => {
+      console.log("Error: ", error);
+      res.status(500).json({ message: error });
+    
+    })
+    // be sure to include its associated Products
+    
 });
-
-router.post('/', (req, res) => {
-  console.log("Request Object: ", req.body)
-  // create a new category
   
-  res.status(200).json({ message: 'new info created' });
+router.post('/', (req, res) => {
+    console.log("Request Object: ", req.body)
+    // create a new category
+    Category.create(req.body)
+      .then(data => {
+        console.log("data: ", data);
+        res.status(200).json(data);
+      })
+      .catch(error => {
+        console.log("Error: ", error);
+        res.status(500).json({ message: error });
+      })
 });
 
 router.put('/:id', (req, res) => {
   console.log("Request Params: ", req.params)
   console.log("Request Body: ", req.body)
   // update a category by its `id` value
-    // We first make a request to our DB for the record we want to update (using the id from the request params)
-       // IF the record is found in the DB --> Then we take the req.body DATA and use the update method to change the value of the category_name field to the value in req.body
-  fetch(toOurDB, {   // the fetch method RETURNS a PROMISE
+  fetch(`http://localhost:3001/api/categories/${req.params.id}`, {   // the fetch method RETURNS a PROMISE
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -51,6 +72,16 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
+  Category.destroy({ where: { id: req.params.id }})
+    .then(data => {
+      console.log("data: ", data);
+      res.status(200).json({ message: data });
+    })
+    .catch(error => {
+      console.log("Error: ", error);
+      res.status(500).json({ message: error });
+    
+    })
 });
 
 module.exports = router;
