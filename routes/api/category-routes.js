@@ -85,3 +85,28 @@ router.delete('/:id', (req, res) => {
 });
 
 module.exports = router;
+
+Function: UpdateCategoryById(req, res)
+    // Route handler for updating a category by its ID
+    // Extract the category ID from the request parameters
+    id = req.params.id
+    // Use the Category model to update the category in the database
+    Category.update(
+        req.body,                   // Data to update (from request body)
+        {
+            where: {
+                id: id,             // Filter by category ID
+            },
+        }
+    )
+    .then((category) => {
+        // If the update operation is successful,
+        // Send a 200 OK response with the updated category object as JSON
+        res.status(200).json(category);
+    })
+    .catch((err) => {
+        // If an error occurs during the update operation,
+        // Send a 400 Bad Request response with the error message as JSON
+        res.status(400).json(err);
+    });
+End Function
