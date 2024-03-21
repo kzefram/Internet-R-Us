@@ -57,18 +57,25 @@ router.post('/', (req, res) => {
 
 
 router.put('/:id', (req, res) => {
-  // update a tag's name by its `id` value
-  console.log("Request Object: ", req.body)
-    // create a new tag
-    Tag.create(req.body)
-      .then(data => {
-        console.log("data: ", data);
-        res.status(200).json(data);
-      })
-      .catch(error => {
-        console.log("Error: ", error);
-        res.status(500).json({ message: error });
-      })
+  Tags.update(
+    req.body,                   // Data to update (from request body)
+    {
+      where: {
+        id: id,             // Filter by tag ID
+      },
+    }
+    )
+  })
+  .then((tag) => {
+    // If the update operation is successful,
+    // Send a 200 OK response with the updated tag object as JSON
+    res.status(200).json(tag);
+  })
+  .catch((err) => {
+    // If an error occurs during the update operation,
+    // Send a 400 Bad Request response with the error message as JSON
+    console.log("Error: ", err);
+    res.status(400).json(err);
 });
 
 
